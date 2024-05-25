@@ -11,6 +11,7 @@ import star from './star.svg'
 import truckFast from './truck-fast.svg'
 import twitter from './twitter.svg'
 import heart from './heart.png'
+import heart1 from './heart1.png'
 
 export {
     arrowRight,
@@ -25,5 +26,6 @@ export {
     star,
     truckFast,
     twitter,
-    heart
+    heart,
+    heart1,
 }

@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShoeSection from "./sections/ShoeSection";
 import Navbar from "../components/Navbar";
 import { Hero, CustomerReviews, Footer, PopularProducts, Services, SpecialOffer, Subscribe, SuperQuality } from "./sections";
 import { Route, Routes } from "react-router-dom";
 import ProductPage from "./ProductPage";
+import {toast} from 'react-toastify'
 
 const HomePage = () => {
     const [darkMode, setDarkMode] = useState(false);
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  }
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    }
     return (
         <div className={`${darkMode && "dark"}`}>
-            <main className="relative dark:bg-[#070F2B] ">
+            <main className="relative slow dark:bg-[#070F2B] ">
                 <div className="fixed top-0 w-full z-20 ">
                     <Navbar />
                 </div>

@@ -22,9 +22,9 @@ const ShoeSection = ({ ele }) => {
     const { ref, inView } = useInView({
         threshold: 0.5, // Adjust as needed
     });
-    useEffect(()=>{
-        console.log(isInView)
-    },[isInView])
+    // useEffect(()=>{
+    //     console.log(isInView)
+    // },[isInView])
     useEffect(() => {
         if (inView) {
             setIsInView(true);
