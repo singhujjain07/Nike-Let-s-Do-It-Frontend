@@ -3,9 +3,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/auth';
 import { Link } from 'react-router-dom'
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
 
-const Cart = ({ type }) => {
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+const Cart = ({ type, address }) => {
     const [auth, setAuth] = useAuth();
     const [cart, setCart] = useState([]);
     const [products, setProducts] = useState([]);
@@ -74,7 +78,7 @@ const Cart = ({ type }) => {
                 setProducts(productsData);
                 setSubtotal(totalPrice);
             }
-            else{
+            else {
                 setProducts([]);
                 setSubtotal(0);
             }
@@ -85,7 +89,41 @@ const Cart = ({ type }) => {
     useEffect(() => {
         fetchProductDetails();
     }, [cart])
-
+    const placeOrder = async () => {
+        if (!address) {
+            console.log('address not found');
+            return;
+        }
+        let orderItems = [];
+        cart.map((item, index) => {
+            let itemInfo = {
+                name: products[index].model,
+                price: products[index].price,
+                quantity: item.qty,
+            }
+            orderItems.push(itemInfo);
+        })
+        let orderData = {
+            userId: auth.user._id,
+            address: address,
+            items: orderItems,
+            amount: subtotal,
+        }
+        let res = await axios.post(`/api/v1/order/place`, orderData);
+        if (res.data.success) {
+            const stripe = await stripePromise;
+            const { error } = await stripe.redirectToCheckout({
+                sessionId: res.data.session_url,
+            });
+            if (error) {
+                console.error('Error:', error);
+            }
+            // toast.success(res.data.message);
+        }
+        else {
+            toast.error(res.data.message);
+        }
+    }
     return (
         <div>
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -157,8 +195,6 @@ const Cart = ({ type }) => {
                     </ul>
                 </div>
             </div>
-
-
             <div className="border-t border-gray-200 mt-6 py-6 ">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
@@ -166,12 +202,21 @@ const Cart = ({ type }) => {
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                 <div className="mt-6">
-                    <Link
-                        to={type === 0 ? "/checkout" : "/checkout"}
-                        className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                    >
-                        {type === 0 ? "Checkout" : "Place Order/Pay Now"}
-                    </Link>
+                    {type === 0 ? (
+                        <Link
+                            to="/checkout"
+                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                        >
+                            Checkout
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={() => { placeOrder() }}
+                            className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                        >
+                            Place Order/Pay Now
+                        </button>
+                    )}
                 </div>
                 <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                     <p>

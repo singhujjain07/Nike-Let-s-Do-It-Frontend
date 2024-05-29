@@ -17,6 +17,7 @@ import FavoritesPage from "./pages/FavoritesPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AboutUsPage from "./pages/AboutUsPage";
+import VerifyPage from "./pages/VerifyPage";
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -74,6 +75,7 @@ const App = () => {
         <Route path="/cart" element={<CartPage/>} />
         <Route path="/checkout" element={<CheckoutPage/>} />
         <Route path="/aboutus" element={<AboutUsPage/>} />
+        <Route path="/verify" element={<VerifyPage/>} />
       </Routes>
     </div>
   )
