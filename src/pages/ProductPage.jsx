@@ -112,7 +112,7 @@ const ProductPage = () => {
                         <div className='h-[85vh] overflow-y-scroll prod_scroll lg:block hidden'>
                             {
                                 shoeImg?.map((imgUrl, index) => (
-                                    <div key={index} onClick={() => setShoeInd(index)} className={`${index == shoeInd && "border-black"} border-[1px] overflow-hidden flex bg-center bg-cover justify-center items-center rounded-md  hover:border-black cursor-pointer max-sm:flex-1 w-[70px] h-[70px] max-sm:p-4 mb-1`}>
+                                    <div key={index} onMouseOver={() => setShoeInd(index)} className={`${index == shoeInd && "border-black"} border-[2px] overflow-hidden flex bg-center bg-cover justify-center items-center rounded-md  hover:border-black cursor-pointer max-sm:flex-1 w-[70px] h-[70px] max-sm:p-4 mb-1`}>
                                         <img className='' src={imgUrl} />
                                     </div>
                                 ))
@@ -152,7 +152,7 @@ const ProductPage = () => {
                         <div className="grid grid-cols-5 gap-1 max-sm:mt-4  2xl:w-4/5">
                             {
                                 product?.colors?.map((color, index) => (
-                                    <div key={index} onClick={() => { setShoeimg(color.images); setShoeSizes(color.sizes); setShoeClr(index); if (shoeClr != index) { handleSize(-1, 0) } }} className={`border-[1px] overflow-hidden flex bg-center bg-cover justify-center items-center rounded-md ${index == shoeClr && "border-black"} hover:border-black cursor-pointer max-sm:flex-1 lg:w-[65px] lg:h-[65px] xl:w-[70px] xl:h-[70px] `}>
+                                    <div key={index} onClick={() => { setShoeimg(color.images); setShoeSizes(color.sizes); setShoeClr(index); if (shoeClr != index) { handleSize(-1, 0) } }} className={`border-[2px] overflow-hidden flex bg-center bg-cover justify-center items-center rounded-md ${index == shoeClr && "border-black"} hover:border-black cursor-pointer max-sm:flex-1 lg:w-[65px] lg:h-[65px] xl:w-[70px] xl:h-[70px] `}>
                                         <img className='' src={color.images[0]} alt={color.name} />
                                     </div>
                                 ))

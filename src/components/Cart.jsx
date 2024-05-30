@@ -5,11 +5,13 @@ import { useAuth } from '../context/auth';
 import { Link } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const Cart = ({ type, address }) => {
+const Cart = ({ type, address, mode }) => {
     const [auth, setAuth] = useAuth();
     const [cart, setCart] = useState([]);
     const [products, setProducts] = useState([]);
@@ -100,6 +102,9 @@ const Cart = ({ type, address }) => {
                 name: products[index].model,
                 price: products[index].price,
                 quantity: item.qty,
+                img: item.img,
+                size: item.size,
+                color: products[index].colors[item.color].name
             }
             orderItems.push(itemInfo);
         })
@@ -124,6 +129,9 @@ const Cart = ({ type, address }) => {
             toast.error(res.data.message);
         }
     }
+    if(address?.country){
+        console.log(address?.country !== "India")
+    }
     return (
         <div>
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -131,68 +139,76 @@ const Cart = ({ type, address }) => {
             </h2>
             <div className="mt-8">
                 <div className="flow-root">
-                    <ul role="list" className="-my-6 divide-y divide-gray-200">
-                        {cart?.map((cartItem) => {
-                            const product = products.find(p => p._id === cartItem.productId);
-                            return (product &&
-                                <li key={cartItem._id} className="flex py-6">
-                                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                        <img
-                                            src={product.colors[cartItem.color].images[0]}
-                                            alt={product._id}
-                                            className="h-full w-full object-cover object-center"
-                                        />
-                                    </div>
-
-                                    <div className="ml-4 flex flex-1 flex-col">
-                                        <div>
-                                            <div className="flex justify-between text-base font-medium text-gray-900">
-                                                <h3>
-                                                    {product.model}
-                                                </h3>
-                                                <p className="ml-4">
-                                                    Rs. {product.price}
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-1 items-end justify-between text-sm">
-                                                <p className="mt-1 text-sm text-gray-500">
-                                                    {product.colors[cartItem.color].name}
-                                                </p>
-                                                <p className="mt-1 text-sm text-gray-500">
-                                                    Size: {cartItem.size}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-1 items-end justify-between text-sm">
-                                            <div className="text-gray-500">
-                                                <label htmlFor={`qty-${cartItem._id}`} className='mr-1'>Qty:</label>
-                                                <input
-                                                    type="number"
-                                                    value={cartItem.qty}
-                                                    id={`qty-${cartItem._id}`}
-                                                    name="qty"
-                                                    step="1"
-                                                    min={1}
-                                                    max={product.colors[cartItem.color].sizes[cartItem.size]}
-                                                    onChange={(e) => handleQuantityChange(cartItem._id, parseInt(e.target.value))}
-                                                    className='p-0 text-center border-gray-500 rounded-xl'
+                    {
+                        cart && cart.length ? (
+                            <ul role="list" className="-my-6 divide-y divide-gray-200">
+                                {cart?.map((cartItem) => {
+                                    const product = products.find(p => p._id === cartItem.productId);
+                                    return (product &&
+                                        <li key={cartItem._id} className="flex py-6">
+                                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                                <img
+                                                    src={product.colors[cartItem.color].images[0]}
+                                                    alt={product._id}
+                                                    className="h-full w-full object-cover object-center"
                                                 />
                                             </div>
 
-                                            <div className="flex">
-                                                <button onClick={() => { handleRemoveCart(cartItem._id) }}
-                                                    type="button"
-                                                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                                                >
-                                                    Remove
-                                                </button>
+                                            <div className="ml-4 flex flex-1 flex-col">
+                                                <div>
+                                                    <div className="flex justify-between text-base font-medium text-gray-900">
+                                                        <h3>
+                                                            {product.model}
+                                                        </h3>
+                                                        <p className="ml-4">
+                                                            Rs. {product.price}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex flex-1 items-end justify-between text-sm">
+                                                        <p className="mt-1 text-sm text-gray-500">
+                                                            {product.colors[cartItem.color].name}
+                                                        </p>
+                                                        <p className="mt-1 text-sm text-gray-500">
+                                                            Size: {cartItem.size}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-1 items-end justify-between text-sm">
+                                                    <div className="text-gray-500">
+                                                        <label htmlFor={`qty-${cartItem._id}`} className='mr-1'>Qty:</label>
+                                                        <input
+                                                            type="number"
+                                                            value={cartItem.qty}
+                                                            id={`qty-${cartItem._id}`}
+                                                            name="qty"
+                                                            step="1"
+                                                            min={1}
+                                                            max={product.colors[cartItem.color].sizes[cartItem.size]}
+                                                            onChange={(e) => handleQuantityChange(cartItem._id, parseInt(e.target.value))}
+                                                            className='p-0 text-center border-gray-500 rounded-xl'
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex">
+                                                        <button onClick={() => { handleRemoveCart(cartItem._id) }}
+                                                            type="button"
+                                                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            )
-                        })}
-                    </ul>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        ) : (
+                            <div>
+                                Add items to your cart
+                            </div>
+                        )
+                    }
                 </div>
             </div>
             <div className="border-t border-gray-200 mt-6 py-6 ">
@@ -212,8 +228,13 @@ const Cart = ({ type, address }) => {
                     ) : (
                         <button
                             onClick={() => { placeOrder() }}
-                            className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                            className={`w-full flex items-center justify-center rounded-md border border-transparent px-6 py-3 text-base font-medium text-white shadow-sm 
+                            ${!mode || address.country!=="India" ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                            disabled={!mode || address.country!=="India"}
+                            data-tooltip-id={(!mode || address.country!="India") ? "my-tooltip" :""}
+                            data-tooltip-content={!mode ? "Currently we don't accept cash on delivery" : "Currently we don't ship outside India"}
                         >
+                            
                             Place Order/Pay Now
                         </button>
                     )}
@@ -231,6 +252,7 @@ const Cart = ({ type, address }) => {
                     </p>
                 </div>
             </div>
+            <ReactTooltip id="my-tooltip" />
         </div>
     )
 }

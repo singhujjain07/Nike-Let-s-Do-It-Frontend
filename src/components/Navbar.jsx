@@ -68,10 +68,10 @@ const Navbar = () => {
 
                 {
                     auth.user ? (
-                        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                            <Menu as="div" className="relative inline-block text-left">
+                        <div className="hidden lg:flex lg:flex-1 lg:justify-end ">
+                            <Menu as="div" className="relative inline-block text-left ">
                                 <div>
-                                    <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                    <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                         Options
                                         <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
@@ -141,6 +141,19 @@ const Navbar = () => {
                                                         )}
                                                     >
                                                         Favorites
+                                                    </NavLink>
+                                                )}
+                                            </Menu.Item>
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <NavLink
+                                                        to="/my-orders"
+                                                        className={classNames(
+                                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                            'block px-4 py-2 text-sm'
+                                                        )}
+                                                    >
+                                                        My Orders
                                                     </NavLink>
                                                 )}
                                             </Menu.Item>
@@ -242,6 +255,11 @@ const Navbar = () => {
                                         <div className="">
                                             <Link to="/cart" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                                                 Cart
+                                            </Link>
+                                        </div>
+                                        <div className="">
+                                            <Link to="/my-orders" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                                                My Orders
                                             </Link>
                                         </div>
                                         <div className="">

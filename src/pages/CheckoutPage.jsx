@@ -17,7 +17,8 @@ const CheckoutPage = () => {
     const [state, setState] = useState("");
     const [pinCode, setPinCode] = useState("");
     const [addresses, setAddresses] = useState([]);
-    const [addIndex,setAddIndex] = useState(0);
+    const [addIndex, setAddIndex] = useState(0);
+    const [paymentMode, setPaymentMode] = useState(0);
     const resetForm = () => {
         setFullname("");
         setCountry("India");
@@ -57,7 +58,7 @@ const CheckoutPage = () => {
         getAllAddresses();
     }, [auth?.user])
 
-    
+
 
     return (
         <div className='bg-gray-300'>
@@ -236,15 +237,15 @@ const CheckoutPage = () => {
                                                 Choose from Existing addresses:
                                             </p>
                                             <ul role="list" className="">
-                                                {addresses?.map((address,index) => (
+                                                {addresses?.map((address, index) => (
                                                     <li key={address._id} className="flex justify-between gap-x-6 px-5 py-5 mt-1 " style={{ border: "1px solid gray" }}>
                                                         <div className="flex min-w-0 gap-x-4">
                                                             <input
                                                                 name="address"
                                                                 type="radio"
                                                                 value={index}
-                                                                checked={index==addIndex}
-                                                                onChange={()=>{setAddIndex(index)}}
+                                                                checked={index == addIndex}
+                                                                onChange={() => { setAddIndex(index) }}
                                                                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                             />
                                                             <div className="min-w-0 flex-auto">
@@ -293,6 +294,9 @@ const CheckoutPage = () => {
                                                         id="cash"
                                                         name="payments"
                                                         type="radio"
+                                                        value={0}
+                                                        checked={paymentMode == 0}
+                                                        onChange={() => { setPaymentMode(0) }}
                                                         className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                     />
                                                     <label htmlFor="cash" className="block text-sm font-medium leading-6 text-gray-900">
@@ -304,6 +308,9 @@ const CheckoutPage = () => {
                                                         id="card"
                                                         name="payments"
                                                         type="radio"
+                                                        value={1}
+                                                        checked={paymentMode == 1}
+                                                        onChange={() => { setPaymentMode(1) }}
                                                         className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                                                     />
                                                     <label htmlFor="card" className="block text-sm font-medium leading-6 text-gray-900">
@@ -320,9 +327,9 @@ const CheckoutPage = () => {
                     </div>
                     <div className='lg:col-span-2'>
                         {/* <div className=""> */}
-                            <div className=" bg-white mx-auto max-w-2xl py-4 px-6 sm:px-6 lg:px-6 sm:py-6 lg:max-w-7xl ">
-                                <Cart type={1} address={addresses && addresses.length ? addresses[addIndex] : null}/>
-                            </div>
+                        <div className=" bg-white mx-auto max-w-2xl py-4 px-6 sm:px-6 lg:px-6 sm:py-6 lg:max-w-7xl ">
+                            <Cart mode={paymentMode} type={1} address={addresses && addresses.length ? addresses[addIndex] : null} />
+                        </div>
                         {/* </div> */}
                     </div>
                 </div>

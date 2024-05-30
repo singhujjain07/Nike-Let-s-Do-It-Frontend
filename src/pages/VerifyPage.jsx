@@ -11,7 +11,7 @@ const VerifyPage = () => {
     const navigate = useNavigate();
     const verifyPayment = async () => {
         const res = await axios.post('/api/v1/order/verify', { success, orderId });
-        if (res.data.success) {
+        if (res.data.success && success=="true") {
             await setAuth((prevAuth) => ({
                 ...prevAuth,
                 user: {

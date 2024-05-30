@@ -18,6 +18,8 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import VerifyPage from "./pages/VerifyPage";
+import PageNotFound from "./pages/PageNotFound";
+import MyOrdersPage from "./pages/MyOrdersPage";
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -76,6 +78,8 @@ const App = () => {
         <Route path="/checkout" element={<CheckoutPage/>} />
         <Route path="/aboutus" element={<AboutUsPage/>} />
         <Route path="/verify" element={<VerifyPage/>} />
+        <Route path="/my-orders" element={<MyOrdersPage/>} />
+        <Route path="*" element={<PageNotFound/>} />
       </Routes>
     </div>
   )
