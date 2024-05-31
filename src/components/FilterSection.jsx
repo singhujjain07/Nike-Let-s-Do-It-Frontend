@@ -62,7 +62,7 @@ const FilterSection = () => {
         <div className='border-b pb-4' key="">
             <p className='font-medium mb-4'>title</p>
             <div className='space-y-2'>
-                {opti}
+                
             </div>
         </div>
     </div>

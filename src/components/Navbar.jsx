@@ -38,7 +38,7 @@ const Navbar = () => {
         }
     });
     return (
-        <header className={`padding-x slow py-4 inset-x-0  absolute z- w-full ${scrolled ? 'bg-[#FF6452] shadow-md' : 'bg-white dark:bg-[#070F2B] dark:text-white'}`}>
+        <header className={`padding-x slow shadow-xl py-4 inset-x-0  absolute z- w-full ${scrolled ? 'bg-[#FF6452] shadow-md' : 'bg-white dark:bg-[#070F2B] dark:text-white'}`}>
             <nav className="flex items-center justify-between  lg:px-8 max-container" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <a href="/">
@@ -71,13 +71,12 @@ const Navbar = () => {
                         <div className="hidden lg:flex lg:flex-1 lg:justify-end ">
                             <Menu as="div" className="relative inline-block text-left ">
                                 <div>
-                                    <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                    <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 border-2 border-coral-red shadow-xl  hover:bg-gray-50">
                                         Options
                                         <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                                         </svg>
 
-                                        {/* <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" /> */}
                                     </Menu.Button>
                                 </div>
 

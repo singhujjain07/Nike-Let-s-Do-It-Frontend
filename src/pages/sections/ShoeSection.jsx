@@ -12,6 +12,8 @@ import Shoe7 from '../../models/Shoe7'  //avg
 import Shoe8 from '../../models/Shoe8'  //good
 import Shoe9 from '../../models/Shoe9'  //below avg
 import Shoe10 from '../../models/Shoe10'
+import Airmax from '../../models/Airmax'
+import Airforce from '../../models/Airforce'
 
 import React, { Suspense, useRef,useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'; // Import useInView hook

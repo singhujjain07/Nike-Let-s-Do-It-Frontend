@@ -12,6 +12,7 @@ import truckFast from './truck-fast.svg'
 import twitter from './twitter.svg'
 import heart from './heart.png'
 import heart1 from './heart1.png'
+import down from './down.png'
 
 export {
     arrowRight,
@@ -28,4 +29,5 @@ export {
     twitter,
     heart,
     heart1,
+    down
 }
