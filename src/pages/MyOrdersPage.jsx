@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from "../components/Navbar";
-import Cart from "../components/Cart";
 import { useAuth } from '../context/auth';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -44,7 +43,7 @@ const MyOrdersPage = () => {
                                                                 </h2>
                                                                 <h2 className='text-lg font-semibold my-2'>
                                                                     {/* Status:  */}
-                                                                    <span className={`inline-block bg-${order.status == "Processing" ? "yellow" : order.status == "Cancelled" ? "red" : "green"}-500 rounded-full p-[6px] mr-1`} />
+                                                                    <span className={`inline-block ${order.status=="Processing" ?"bg-yellow-500" :order.status=="Cancelled" ?"bg-red-500": "bg-green-500"} rounded-full p-[6px] mr-1`} />
                                                                     {order.status}
                                                                 </h2>
                                                             </div>

@@ -124,3 +124,36 @@
 .transition-height {
   transition: height 0.3s ease-in-out;
 }
+
+.progress {
+  background: rgba(255,255,255,0.1);
+  justify-content: flex-start;
+  border-radius: 100px;
+  align-items: center;
+  position: relative;
+  padding: 0 5px;
+  display: flex;
+  height: 40px;
+  width: 500px;
+}
+
+.progress-value {
+  animation: load 7.2s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+  box-shadow: 0 10px 40px -10px #fff;
+  border-radius: 100px;
+  background: #fff;
+  height: 5px;
+  width: 0;
+}
+
+@keyframes load {
+  0% { width: 0; }
+  100% { width: 95%; }
+}
+
+.activePage{
+  @apply  text-coral-red border-coral-red border-2 shadow-xl hover:border-opacity-70 hover:shadow-md
+}
+.inactivePage{
+  @apply  text-black hover:border-opacity-70 hover:shadow-md hover:border hover:border-coral-red
+}

@@ -19,7 +19,9 @@ const SuperQuality = () => {
           Our dedeication to detail and excellence ensures your satisfaction
         </p>
         <div className='mt-11'>
-          <Button label="View Details" />
+          <button className='bg-coral-red text-white rounded-full flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none'>
+            View Details
+          </button>
         </div>
       </div>
       <div className='flex-1 flex justify-center items-center'>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { copyrightSign } from "../../assets/icons"
 import { footerLogo } from "../../assets/images"
 import { footerLinks, socialMedia } from "../../constants"
@@ -22,13 +23,18 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex flex-1 justify-between lg:gap-10 gap-20 flex-wrap">
-          {footerLinks.map((section) => (
+          {footerLinks.map((section,index) => (
             <div key={section.title}>
               <h4 className="text-white font-montserrat text-2xl leading-normal font-medium mb-6">{section.title}</h4>
               <ul>
                 {section.links.map((link) => (
                   <li className="mt-3 text-white-400 font-montserrat text-base leading-normal hover:text-slate-gray cursor-pointer" key={link.name}>
-                    <a href="">{link.name}</a>
+                    {!index ? (
+                      <Link to={link.link}>{link.name}</Link>
+                    ): (
+                      <a >{link.name}</a>
+                    )}
+                    
                   </li>
                 ))}
               </ul>

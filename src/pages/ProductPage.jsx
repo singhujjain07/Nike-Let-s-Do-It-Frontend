@@ -117,7 +117,7 @@ const ProductPage = () => {
             return newState; // Return the updated state
         });
     }
-    
+
     const [showOverlay, setShowOverlay] = useState(true);
     const { ref, inView } = useInView({ threshold: 0.5 }); // Initialize the inView hook
 
@@ -126,21 +126,41 @@ const ProductPage = () => {
         if (inView) {
             timer = setTimeout(() => {
                 setShowOverlay(false);
-            }, 5000); // Hide overlay after 5 seconds
+            }, 8000); // Hide overlay after 5 seconds
         }
         return () => clearTimeout(timer);
     }, [inView]);
 
+    const threeDModel = (id)=>{
+        switch(id){
+            case 1:
+                return <AirJordan1 />
+            case 2:
+                return <AirMax1 />
+            case 3:
+                return <AirForce1 />
+            case 4:
+                return <AirMax90 />
+            case 5:
+                return <DunkLowRetro />
+            case 6:
+                return <Vomero17 />
+            case 7:
+                return <AirMoreUptempo />
+            case 8:
+                return <NikeDunkHigh />
+        }
+    }
 
     return (
         <main className=" flex flex-col dark:bg-[#070F2B]">
             <div className="fixed top-0 w-full z-20 ">
                 <Navbar />
             </div>
-            <section className="xl:px-32 px-8 xl:py-0 py-12 ">
+            <section className="xl:px-32 px-8 xl:py-0 py-12 max-lg:mt-8">
                 <section className=" w-full flex lg:flex-col flex-col justify-center max-container">
                     <div className={`lg:sticky lg:top-24   lg:w-3/5 flex lg:flex-row flex-col items-start w-full xl:gap-8 gap-4`}>
-                        <div className=' h-[85vh] overflow-y-scroll prod_scroll lg:block hidden'>
+                        <div className=' xl:h-[600px] lg:h-[500px] overflow-y-scroll prod_scroll lg:block hidden'>
                             {
                                 shoeImg?.map((imgUrl, index) => (
                                     <div key={index} onMouseOver={() => setShoeInd(index)} className={`${index == shoeInd && "border-black"} border-[2px] overflow-hidden flex bg-center bg-cover justify-center items-center rounded-md  hover:border-black cursor-pointer max-sm:flex-1 w-[70px] h-[70px] max-sm:p-4 mb-1`}>
@@ -166,7 +186,7 @@ const ProductPage = () => {
                             {shoeImg && <img className='xl:h-[600px] xl:w-[480px] lg:h-[500px] lg:w-[430px]' src={shoeImg[shoeInd]} alt="main-shoe" />}
                         </div>
                     </div>
-                    <div className=" lg:-mt-[75vh]   lg:pl-3 lg:ml-auto lg:w-2/5  flex-1 flex flex-col pb-40 sm:py-4 bg-cover bg-center rounded-b-3xl gap-8 px-5">
+                    <div className=" xl:-mt-[530px] lg:-mt-[480px]   lg:pl-3 lg:ml-auto lg:w-2/5  flex-1 flex flex-col pb-40 sm:py-4 bg-cover bg-center rounded-b-3xl gap-8 px-5">
                         <div className='w-full lg:flex flex-col hidden'>
                             <h3 className="font-palanquin  text-3xl font-bold">
                                 {product?.model}
@@ -304,24 +324,34 @@ const ProductPage = () => {
                     </div>
                 </section>
             </section>
-            <section ref={ref} className='xl:px-32 xl:py-24 pt-8 pb-16 bg-[#FF6452]'>
-                <h1 className="bg-white max-sm:mx-8 px-6 pb-1 rounded-3xl dark:text-white mt-10 font-palanquin text-[46px] max-sm:text-[32px] max-sm:leading-[45px] font-bold w-fit">
-                    Take a <span className='text-coral-red'>closer</span> look.
-                </h1>
-                <div className="mx-auto relative  sm:w-[800px] sm:h-[667px] w-screen h-[300px]">
-                    {showOverlay && (
-                        <div className='items-center text-center justify-center absolute z-10 bg-transparent backdrop-blur-sm top-0 left-0 w-full h-full flex '>
-                            <div className='z-10 text-white text-3xl max-sm:text-lg max-sm:px-2 max-sm:leading-[35px] font-semibold bg-[#000] bg-opacity-60 px-9 rounded-lg' >
-                                Double Click and turn to explore
+            {
+                product?.threeD && (
+                    <section ref={ref} className='xl:px-32 xl:py-24 pt-8 pb-16 bg-[#FF6452] w-full'>
+                        <h1 className="bg-white max-lg:mx-12 max-xl:mx-8 px-6 pb-1 rounded-3xl dark:text-white mt-10 font-palanquin md:text-[46px] sm:text-[36px] max-sm:text-[32px] max-sm:leading-[45px] font-bold w-fit">
+                            Take a <span className='text-coral-red'>closer</span> look.
+                        </h1>
+                        <div className="mx-auto relative  md:w-[800px] sm:h-[667px] w-screen max-sm:h-[300px]">
+                            {showOverlay && (
+                                <div className='items-center text-center justify-center absolute z-10 bg-transparent backdrop-blur-sm top-0 left-0 w-full h-full flex '>
+                                    <div>
+                                        <div className='z-10 text-white text-3xl max-sm:text-lg max-sm:px-2 max-sm:leading-[35px] font-semibold bg-[#000] bg-opacity-60 px-9 rounded-lg' >
+                                            Double Click and turn to explore
+                                        </div>
+                                        <div class="progress ">
+                                            <div class={`${inView && "progress-value"}`}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="absolute mx-auto  md:w-[800px] md:h-[667px] sm:w-full sm:h-full   w-screen h-[300px]">
+                                {/* <Vomero17 /> */}
+                                {threeDModel(product?.threeD)}
                             </div>
                         </div>
-                    )}
-
-                    <div className="absolute mx-auto  sm:w-[800px] sm:h-[667px] w-screen h-[300px]">
-                        <Vomero17  />
-                    </div>
-                </div>
-            </section>
+                    </section>
+                )
+            }
         </main>
     )
 }

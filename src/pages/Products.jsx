@@ -17,33 +17,33 @@ import {
     TransitionChild,
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, } from '@heroicons/react/20/solid'
 
 const sortOptions = [
-    { name: 'Most Popular', href: '#', current: true },
-    { name: 'Best Rating', href: '#', current: false },
-    { name: 'Newest', href: '#', current: false },
-    { name: 'Price: Low to High', href: '#', current: false },
-    { name: 'Price: High to Low', href: '#', current: false },
+    { name: 'Cancel Sort', value: 0 },
+    { name: '3D Model', value: 1 },
+    { name: 'Non 3D Model', value: 2 },
+    { name: 'Price: Low to High', value: 3 },
+    { name: 'Price: High to Low', value: 4 },
 ]
 const subCategories = [
-    { name: 'Men', href: '#' },
-    { name: 'Women', href: '#' },
+    { name: 'Men', value: 'male' },
+    { name: 'Women', value: 'female' },
 ]
 const filters = [
     {
         id: 'color',
         name: 'Color',
         options: [
-            { value: 'white', label: 'White', checked: false },
-            { value: 'black', label: 'Black', checked: false },
-            { value: 'red', label: 'Red', checked: false },
-            { value: 'pink', label: 'Pink', checked: false },
-            { value: 'beige', label: 'Beige', checked: false },
-            { value: 'blue', label: 'Blue', checked: false },
-            { value: 'brown', label: 'Brown', checked: false },
-            { value: 'green', label: 'Green', checked: false },
-            { value: 'purple', label: 'Purple', checked: false },
+            { value: 'white', label: 'White' },
+            { value: 'black', label: 'Black' },
+            { value: 'red', label: 'Red' },
+            { value: 'pink', label: 'Pink' },
+            { value: 'aquatone', label: 'Aquatone' },
+            { value: 'blue', label: 'Blue' },
+            { value: 'brown', label: 'Brown' },
+            { value: 'green', label: 'Green' },
+            { value: 'purple', label: 'Purple' },
         ],
     },
 ]
@@ -53,33 +53,70 @@ function classNames(...classes) {
 }
 
 export default function Example() {
-    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const navigate = useNavigate()
+    const itemsPerPage = 12;
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [products, setProducts] = useState([]);
-    // get all products
-    const getAllProducts = async () => {
+    const [colors, setColors] = useState([]);
+    const [genders, setGenders] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [data, setData] = useState([]);
+    const [pages, setPages] = useState([]);
+    const [gridView, setGridView] = useState(0);
+    const [sortBy, setSortBy] = useState(0);
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+    const fetchProducts = async () => {
         try {
-            const { data } = await axios.get('/api/v1/products/get-products')
-            setProducts(data?.products);
+            const response = await axios.get('/api/v1/products/products', {
+                params: {
+                    colors: colors.join(','),
+                    gender: genders.join(','),
+                    sortBy: sortBy
+                }
+            });
+            setProducts(response.data);
         } catch (error) {
-            console.log(error)
-            toast.error('Something Went Wrong')
+            console.error('Error fetching products:', error);
         }
-    }
-    const getFilteredProducts = async () => {
-        try {
-            const { data } = await axios.get(`/api/v1/products/get-filtered-product?gender=male`);
-            // console.log(data.products)
-        } catch (error) {
-            console.log(error)
-            toast.error('Something Went Wrong')
-        }
-    }
-    // lifeCycle method
+    };
+    const handleColorChange = (color) => {
+        const updatedColors = colors.includes(color)
+            ? colors.filter((c) => c !== color)
+            : [...colors, color];
+        setColors(updatedColors);
+    };
+    const handleGenderChange = (gender) => {
+        const updatedGenders = genders.includes(gender)
+            ? genders.filter((g) => g !== gender)
+            : [...genders, gender];
+        setGenders(updatedGenders);
+    };
     useEffect(() => {
-        getAllProducts();
-        getFilteredProducts();
-    }, [])
+        fetchProducts();
+    }, [colors, genders,sortBy])
+    useEffect(() => {
+        let sz = Math.ceil(products.length / itemsPerPage);
+        setTotalPages(sz);
+        setData(products.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage
+        ))
+        const x = [];
+        for (let i = 1; i <= sz; i++) {
+            x.push(i);
+        }
+        setPages(x);
+        setCurrentPage(1);
+    }, [products])
+    useEffect(() => {
+        setData(products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+    }, [currentPage])
+    useEffect(()=>{
+        console.log(sortBy)
+    },[sortBy])
     return (
         <div className="bg-white">
             <div className="fixed top-0 w-full z-20 ">
@@ -128,7 +165,7 @@ export default function Example() {
                                         <ul role="list" className="px-2 py-3 font-medium text-gray-900">
                                             {subCategories.map((category) => (
                                                 <li key={category.name} className='flex'>
-                                                    <input type="checkbox" name="" id="" className='flex my-auto ml-2 rounded-full' />
+                                                    <input type="checkbox" value={category.value} checked={genders.includes(category.value)} onChange={() => handleGenderChange(category.value)} className='flex my-auto ml-2 rounded-full' />
                                                     <a href={category.href} className="block px-2 py-3">
                                                         {category.name}
                                                     </a>
@@ -168,9 +205,10 @@ export default function Example() {
                                                                             <input
                                                                                 id={`filter-mobile-${section.id}-${optionIdx}`}
                                                                                 name={`${section.id}[]`}
-                                                                                defaultValue={option.value}
                                                                                 type="checkbox"
-                                                                                defaultChecked={option.checked}
+                                                                                value={option.value}
+                                                                                checked={colors.includes(option.value)}
+                                                                                onChange={() => handleColorChange(option.value)}
                                                                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                                                             />
                                                                             <label
@@ -198,7 +236,7 @@ export default function Example() {
 
                 <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                        <h1 className="lg:text-4xl text-3xl font-bold tracking-tight text-gray-900">
                             Just Do It!
                         </h1>
 
@@ -228,7 +266,7 @@ export default function Example() {
                                                 <MenuItem key={option.name}>
                                                     {({ focus }) => (
                                                         <a
-                                                            href={option.href}
+                                                            onClick={()=>setSortBy(option.value)}
                                                             className={classNames(
                                                                 option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                                                 focus ? 'bg-gray-100' : '',
@@ -245,9 +283,9 @@ export default function Example() {
                                 </Transition>
                             </Menu>
 
-                            <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+                            <button type="button" onClick={() => setGridView(!gridView)} className="max-lg:hidden -m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                                 <span className="sr-only">View grid</span>
-                                <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+                                <Squares2X2Icon className={`h-5 w-5 ${gridView && 'text-coral-red'}`} aria-hidden="true" />
                             </button>
                             <button
                                 type="button"
@@ -272,7 +310,7 @@ export default function Example() {
                                 <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {subCategories.map((category) => (
                                         <li key={category.name} className='flex'>
-                                            <input type="checkbox" name="" id="" className='flex mt-[3.5px] mr-2 rounded-full' />
+                                            <input type="checkbox" value={category.value} checked={genders.includes(category.value)} onChange={() => handleGenderChange(category.value)} className='flex mt-[3.5px] mr-2 rounded-full' />
 
                                             <a href={category.href} className=''>{category.name}</a>
                                         </li>
@@ -295,28 +333,41 @@ export default function Example() {
                                                         </span>
                                                     </DisclosureButton>
                                                 </h3>
-                                                <DisclosurePanel className="pt-6">
-                                                    <div className="space-y-4">
-                                                        {section.options.map((option, optionIdx) => (
-                                                            <div key={option.value} className="flex items-center">
-                                                                <input
-                                                                    id={`filter-${section.id}-${optionIdx}`}
-                                                                    name={`${section.id}[]`}
-                                                                    defaultValue={option.value}
-                                                                    type="checkbox"
-                                                                    defaultChecked={option.checked}
-                                                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                                                />
-                                                                <label
-                                                                    htmlFor={`filter-${section.id}-${optionIdx}`}
-                                                                    className="ml-3 text-sm text-gray-600"
-                                                                >
-                                                                    {option.label}
-                                                                </label>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </DisclosurePanel>
+                                                <Transition
+                                                    as="div"
+                                                    enter="transition-all duration-500 ease-in-out"
+                                                    enterFrom="max-h-0 opacity-0"
+                                                    enterTo="max-h-screen opacity-100"
+                                                    leave="transition-all duration-500 ease-in-out"
+                                                    leaveFrom="max-h-screen opacity-100"
+                                                    leaveTo="max-h-0 opacity-0"
+                                                >
+                                                    <DisclosurePanel className="pt-6">
+                                                        <div className="space-y-4">
+                                                            {section.options.map((option, optionIdx) => (
+                                                                <div key={option.value} className="flex items-center">
+                                                                    <input
+                                                                        id={`filter-${section.id}-${optionIdx}`}
+                                                                        name={`${section.id}[]`}
+                                                                        defaultValue={option.value}
+                                                                        type="checkbox"
+                                                                        value={option.value}
+                                                                        checked={colors.includes(option.value)}
+                                                                        onChange={() => handleColorChange(option.value)}
+                                                                        defaultChecked={option.checked}
+                                                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                                    />
+                                                                    <label
+                                                                        htmlFor={`filter-${section.id}-${optionIdx}`}
+                                                                        className="ml-3 text-sm text-gray-600"
+                                                                    >
+                                                                        {option.label}
+                                                                    </label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </DisclosurePanel>
+                                                </Transition>
                                             </>
                                         )}
                                     </Disclosure>
@@ -326,19 +377,24 @@ export default function Example() {
                             {/* Product grid */}
                             <div className="lg:col-span-4">
                                 {/* Your content */}
-                                <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                                    {products.map((product, index) => (
+                                <div className={`mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 ${gridView ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} xl:gap-x-8`}>
+                                    {data?.map((product, index) => (
                                         <div onClick={() => navigate(`/product-page/${product.slug}`)} key={index} className="group relative">
+                                            {product?.threeD ? (
+                                                <div className='absolute max-lg:hidden font-montserrat bg-white m-2 px-4 rounded-full border-2 border-coral-red right-0'>
+                                                    3D
+                                                </div>
+                                            ) : ("")}
                                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                                                <img src={product.colors[0].images[0]}
-                                                    alt={product.imageAlt}
+                                                <img src={product.image}
+                                                    alt={product.model}
                                                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                                                 />
                                             </div>
                                             <div className="mt-4 flex justify-between">
                                                 <div>
                                                     <h3 className="text-sm text-gray-700">
-                                                        <a href={product.href}>
+                                                        <a >
                                                             <span aria-hidden="true" className="absolute inset-0" />
                                                             {product.model}
                                                         </a>
@@ -347,10 +403,41 @@ export default function Example() {
                                                         {product?.gender === "male" ? "Men's Shoes" : product?.gender === "female" ? "Women's Shoes" : "Unisex Shoes"}
                                                     </p>
                                                 </div>
-                                                <p className="text-sm font-medium text-gray-900">₹ {product.price}</p>
+                                                <p className="text-sm font-medium text-gray-900">
+                                                    ₹ {product.price}
+                                                </p>
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                                <div className='flex justify-end sm:mt-12 mt:8'>
+                                    <div className="flex gap-4">
+                                        <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}
+                                            className="dark:hover:bg-[#293b55]  flex items-center gap-2 px-3 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            type="button">
+                                            <ChevronLeftIcon className='dark:text-white h-5 w-5' />
+                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            {pages?.map((page) => (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => handlePageChange(page)}
+                                                    className={`relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-md font-semibold  text-center align-middle ${currentPage === page ? 'activePage' : 'inactivePage'}`}
+                                                >
+                                                    <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+
+                                                        {page}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <button onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                            className="dark:hover:bg-[#293b55] flex items-center gap-2 px-3  font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            type="button">
+                                            <ChevronRightIcon className='dark:text-white h-5 w-5' />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

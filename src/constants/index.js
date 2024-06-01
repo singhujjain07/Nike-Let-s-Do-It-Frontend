@@ -93,12 +93,12 @@ export const footerLinks = [
     {
         title: "Products",
         links: [
-            { name: "Air Force 1", link: "/" },
-            { name: "Air Max 1", link: "/" },
-            { name: "Air Jordan 1", link: "/" },
-            { name: "Air Force 2", link: "/" },
-            { name: "Nike Waffle Racer", link: "/" },
-            { name: "Nike Cortez", link: "/" },
+            { name: "Air More Uptempo", link: "/product-page/Nike-Air-More-Uptempo-male" },
+            { name: "Air Max 1", link: "/product-page/Air-Max-1-male" },
+            { name: "Air Jordan 1", link: "/product-page/Air-Jordan-1-Mid" },
+            { name: "Air Force 1", link: "/product-page/Air-Force-1-'07-male" },
+            { name: "Nike Dunk High", link: "product-page/Nike-Dunk-High-female" },
+            { name: "Nike Low Retro", link: "/product-page/Dunk-Low-Retro-female" },
         ],
     },
     {
