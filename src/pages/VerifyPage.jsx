@@ -11,15 +11,18 @@ const VerifyPage = () => {
     const navigate = useNavigate();
     const verifyPayment = async () => {
         const res = await axios.post('/api/v1/order/verify', { success, orderId });
-        if (res.data.success && success=="true") {
-            await setAuth((prevAuth) => ({
-                ...prevAuth,
-                user: {
-                    ...prevAuth.user,
-                    cart: []
-                },
-            }));
-            await localStorage.setItem('auth', JSON.stringify({ ...auth, user: { ...auth.user, cart: [] } }));
+        if (res?.data?.success && success=="true") {
+            setAuth((prevAuth) => {
+                const updatedAuth = {
+                    ...prevAuth,
+                    user: {
+                        ...prevAuth.user,
+                        cart: []
+                    },
+                };
+                localStorage.setItem('auth', JSON.stringify(updatedAuth));
+                return updatedAuth;
+            });
             navigate('/favorites');
         }
         else {

@@ -1,19 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ShoeSection from "./sections/ShoeSection";
 import Navbar from "../components/Navbar";
 import { Hero, CustomerReviews, Footer, PopularProducts, Services, SpecialOffer, Subscribe, SuperQuality } from "./sections";
 import { Route, Routes } from "react-router-dom";
 import ProductPage from "./ProductPage";
 import {toast} from 'react-toastify'
+import { DarkModeContext } from "../context/dark";
 
 const HomePage = () => {
-    const [darkMode, setDarkMode] = useState(false);
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    }
+    const [darkMode,setDarkMode] = useContext(DarkModeContext);
     return (
-        <div className={`${darkMode && "dark"}`}>
-            <main className="relative slow dark:bg-[#070F2B] ">
+        <div >
+            <main className={`relative slow ${darkMode ? 'bgDark' : ''} `}>
                 <div className="fixed top-0 w-full z-20 ">
                     <Navbar />
                 </div>
@@ -43,9 +41,9 @@ const HomePage = () => {
                 </section>
 
             </main>
-            <button onClick={toggleDarkMode} className="fixed  w-16 h-16 bottom-16 right-16 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold">
+            {/* <button  className="fixed  w-16 h-16 bottom-16 right-16 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold">
                 {darkMode ? "LGT" : "DRK"}
-            </button>
+            </button> */}
         </div>
     )
 }

@@ -61,7 +61,7 @@
   }
 
   .info-text {
-    @apply font-montserrat text-slate-gray text-lg leading-7;
+    @apply font-montserrat  text-lg leading-7;
   }
 }
 
@@ -151,9 +151,17 @@
   100% { width: 95%; }
 }
 
-.activePage{
-  @apply  text-coral-red border-coral-red border-2 shadow-xl hover:border-opacity-70 hover:shadow-md
-}
-.inactivePage{
-  @apply  text-black hover:border-opacity-70 hover:shadow-md hover:border hover:border-coral-red
+/* .activePage{
+  @apply  
+} */
+/* .inactivePage{
+  @apply  
+} */
+
+/* dark */
+.bgDark{
+  /* @apply bg-[#070F2B] */
+  /* @apply bg-black */
+  /* @apply bg-[#0D1116] */
+  @apply bg-[#121212]
 }

@@ -13,6 +13,7 @@ import twitter from './twitter.svg'
 import heart from './heart.png'
 import heart1 from './heart1.png'
 import down from './down.png'
+import down1 from './down1.png'
 
 export {
     arrowRight,
@@ -29,5 +30,6 @@ export {
     twitter,
     heart,
     heart1,
-    down
+    down,
+    down1
 }

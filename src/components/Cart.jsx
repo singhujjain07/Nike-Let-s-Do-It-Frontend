@@ -129,9 +129,6 @@ const Cart = ({ type, address, mode }) => {
             toast.error(res.data.message);
         }
     }
-    if(address?.country){
-        console.log(address?.country !== "India")
-    }
     return (
         <div>
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -229,12 +226,12 @@ const Cart = ({ type, address, mode }) => {
                         <button
                             onClick={() => { placeOrder() }}
                             className={`w-full flex items-center justify-center rounded-md border border-transparent px-6 py-3 text-base font-medium text-white shadow-sm 
-                            ${!mode || address.country!=="India" ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                            disabled={!mode || address.country!=="India"}
-                            data-tooltip-id={(!mode || address.country!="India") ? "my-tooltip" :""}
+                            ${!mode || address.country !== "India" ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                            disabled={!mode || address.country !== "India"}
+                            data-tooltip-id={(!mode || address.country != "India") ? "my-tooltip" : ""}
                             data-tooltip-content={!mode ? "Currently we don't accept cash on delivery" : "Currently we don't ship outside India"}
                         >
-                            
+
                             Place Order/Pay Now
                         </button>
                     )}

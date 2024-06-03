@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useContext } from 'react'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Navbar from "../components/Navbar";
@@ -18,6 +18,8 @@ import {
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, } from '@heroicons/react/20/solid'
+import { DarkModeContext } from '../context/dark';
+import { FilterContext } from '../context/filter';
 
 const sortOptions = [
     { name: 'Cancel Sort', value: 0 },
@@ -57,14 +59,17 @@ export default function Example() {
     const itemsPerPage = 12;
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const [products, setProducts] = useState([]);
-    const [colors, setColors] = useState([]);
-    const [genders, setGenders] = useState([]);
+    // const [colors, setColors] = useState([]);
+    // const [genders, setGenders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [data, setData] = useState([]);
     const [pages, setPages] = useState([]);
     const [gridView, setGridView] = useState(0);
-    const [sortBy, setSortBy] = useState(0);
+    // const [sortBy, setSortBy] = useState(0);
+    const [darkMode, setDarkMode] = useContext(DarkModeContext);
+    const [filter, setFilter] = useContext(FilterContext);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -72,9 +77,12 @@ export default function Example() {
         try {
             const response = await axios.get('/api/v1/products/products', {
                 params: {
-                    colors: colors.join(','),
-                    gender: genders.join(','),
-                    sortBy: sortBy
+                    // colors: colors.join(','),
+                    // gender: genders.join(','),
+                    // sortBy: sortBy
+                    colors: filter.colors.join(','),
+                    gender: filter.genders.join(','),
+                    sortBy: filter.sortBy
                 }
             });
             setProducts(response.data);
@@ -83,20 +91,35 @@ export default function Example() {
         }
     };
     const handleColorChange = (color) => {
-        const updatedColors = colors.includes(color)
-            ? colors.filter((c) => c !== color)
-            : [...colors, color];
-        setColors(updatedColors);
+        const updatedColors = filter.colors.includes(color)
+            ? filter.colors.filter((c) => c !== color)
+            : [...filter.colors, color];
+        setFilter((prevFilter) => {
+            const updatedFilter = { ...prevFilter, colors: updatedColors }
+            localStorage.setItem('filter', JSON.stringify(updatedFilter));
+            return updatedFilter;
+        });
     };
     const handleGenderChange = (gender) => {
-        const updatedGenders = genders.includes(gender)
-            ? genders.filter((g) => g !== gender)
-            : [...genders, gender];
-        setGenders(updatedGenders);
+        const updatedGenders = filter.genders.includes(gender)
+            ? filter.genders.filter((g) => g !== gender)
+            : [...filter.genders, gender];
+        setFilter((prevFilter) => {
+            const updatedFilter = { ...prevFilter, genders: updatedGenders }
+            localStorage.setItem('filter', JSON.stringify(updatedFilter));
+            return updatedFilter;
+        });
+    };
+    const handleSortBy = (sortBy) => {
+        setFilter((prevFilter) => {
+            const updatedFilter = { ...prevFilter, sortBy: sortBy }
+            localStorage.setItem('filter', JSON.stringify(updatedFilter));
+            return updatedFilter;
+        });
     };
     useEffect(() => {
         fetchProducts();
-    }, [colors, genders,sortBy])
+    }, [filter])
     useEffect(() => {
         let sz = Math.ceil(products.length / itemsPerPage);
         setTotalPages(sz);
@@ -114,11 +137,8 @@ export default function Example() {
     useEffect(() => {
         setData(products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
     }, [currentPage])
-    useEffect(()=>{
-        console.log(sortBy)
-    },[sortBy])
     return (
-        <div className="bg-white">
+        <div className={`${darkMode ? 'bgDark' : ''}`}>
             <div className="fixed top-0 w-full z-20 ">
                 <Navbar />
             </div>
@@ -165,7 +185,7 @@ export default function Example() {
                                         <ul role="list" className="px-2 py-3 font-medium text-gray-900">
                                             {subCategories.map((category) => (
                                                 <li key={category.name} className='flex'>
-                                                    <input type="checkbox" value={category.value} checked={genders.includes(category.value)} onChange={() => handleGenderChange(category.value)} className='flex my-auto ml-2 rounded-full' />
+                                                    <input type="checkbox" value={category.value} checked={filter.genders.includes(category.value)} onChange={() => handleGenderChange(category.value)} className='flex my-auto ml-2 rounded-full' />
                                                     <a href={category.href} className="block px-2 py-3">
                                                         {category.name}
                                                     </a>
@@ -207,7 +227,7 @@ export default function Example() {
                                                                                 name={`${section.id}[]`}
                                                                                 type="checkbox"
                                                                                 value={option.value}
-                                                                                checked={colors.includes(option.value)}
+                                                                                checked={filter.colors.includes(option.value)}
                                                                                 onChange={() => handleColorChange(option.value)}
                                                                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                                                             />
@@ -236,14 +256,14 @@ export default function Example() {
 
                 <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                        <h1 className="lg:text-4xl text-3xl font-bold tracking-tight text-gray-900">
+                        <h1 className={`${darkMode ? 'text-gray-400' : 'text-gray-400'} lg:text-4xl text-3xl font-bold tracking-tight `}>
                             Just Do It!
                         </h1>
 
                         <div className="flex items-center">
                             <Menu as="div" className="relative inline-block text-left">
                                 <div>
-                                    <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                    <MenuButton className={` ${darkMode ? 'text-gray-400' : 'text-gray-700 hover:text-gray-900'} group inline-flex justify-center text-sm font-medium`}>
                                         Sort
                                         <ChevronDownIcon
                                             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -266,7 +286,7 @@ export default function Example() {
                                                 <MenuItem key={option.name}>
                                                     {({ focus }) => (
                                                         <a
-                                                            onClick={()=>setSortBy(option.value)}
+                                                            onClick={() => handleSortBy(option.value)}
                                                             className={classNames(
                                                                 option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                                                 focus ? 'bg-gray-100' : '',
@@ -307,23 +327,26 @@ export default function Example() {
                             {/* Filters */}
                             <form className="hidden lg:block">
                                 <h3 className="sr-only">Categories</h3>
-                                <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                                <ul role="list" className={`space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900`}>
                                     {subCategories.map((category) => (
                                         <li key={category.name} className='flex'>
-                                            <input type="checkbox" value={category.value} checked={genders.includes(category.value)} onChange={() => handleGenderChange(category.value)} className='flex mt-[3.5px] mr-2 rounded-full' />
+                                            <input type="checkbox" value={category.value} checked={filter.genders.includes(category.value)} onChange={() => handleGenderChange(category.value)}
+                                                className={`${darkMode ? 'bg-coral-red border-coral-red' : ''} text-coral-red focus:ring-coral-red flex mt-[3.5px] mr-2 rounded-full`} />
 
-                                            <a href={category.href} className=''>{category.name}</a>
+                                            <a href={category.href} className={`${darkMode ? 'text-white' : ''}`}>{category.name}</a>
                                         </li>
                                     ))}
                                 </ul>
 
                                 {filters.map((section) => (
-                                    <Disclosure as="div" key={section.id} className="border-b border-gray-200 py-6">
+                                    <Disclosure as="div" key={section.id} className=" border-b border-gray-200 py-6">
                                         {({ open }) => (
                                             <>
                                                 <h3 className="-my-3 flow-root">
-                                                    <DisclosureButton className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                                                        <span className="font-medium text-gray-900">{section.name}</span>
+                                                    <DisclosureButton className={` ${darkMode ? 'bgDark' : 'bg-white'} flex w-full items-center justify-between  py-3 text-sm text-gray-400 hover:text-gray-500`}>
+                                                        <span className={`${darkMode ? 'text-white' : 'text-gray-900'} font-medium `}>
+                                                            {section.name}
+                                                        </span>
                                                         <span className="ml-6 flex items-center">
                                                             {open ? (
                                                                 <MinusIcon className="h-5 w-5" aria-hidden="true" />
@@ -342,24 +365,24 @@ export default function Example() {
                                                     leaveFrom="max-h-screen opacity-100"
                                                     leaveTo="max-h-0 opacity-0"
                                                 >
-                                                    <DisclosurePanel className="pt-6">
+                                                    <DisclosurePanel className="pt-6 ">
                                                         <div className="space-y-4">
                                                             {section.options.map((option, optionIdx) => (
-                                                                <div key={option.value} className="flex items-center">
+                                                                <div key={option.value} className="flex  items-center">
                                                                     <input
                                                                         id={`filter-${section.id}-${optionIdx}`}
                                                                         name={`${section.id}[]`}
-                                                                        defaultValue={option.value}
+                                                                        // defaultValue={option.value}
                                                                         type="checkbox"
                                                                         value={option.value}
-                                                                        checked={colors.includes(option.value)}
+                                                                        checked={filter.colors.includes(option.value)}
                                                                         onChange={() => handleColorChange(option.value)}
-                                                                        defaultChecked={option.checked}
-                                                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                                        // defaultChecked={option.checked}
+                                                                        className="h-4 w-4 rounded border-gray-300 text-coral-red focus:ring-coral-red"
                                                                     />
                                                                     <label
                                                                         htmlFor={`filter-${section.id}-${optionIdx}`}
-                                                                        className="ml-3 text-sm text-gray-600"
+                                                                        className={`${darkMode ? 'text-white ' : 'text-gray-600'} ml-3 text-sm `}
                                                                     >
                                                                         {option.label}
                                                                     </label>
@@ -377,15 +400,15 @@ export default function Example() {
                             {/* Product grid */}
                             <div className="lg:col-span-4">
                                 {/* Your content */}
-                                <div className={`mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 ${gridView ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} xl:gap-x-8`}>
+                                <div className={` mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 ${gridView ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} xl:gap-x-8`}>
                                     {data?.map((product, index) => (
-                                        <div onClick={() => navigate(`/product-page/${product.slug}`)} key={index} className="group relative">
+                                        <div onClick={() => navigate(`/product-page/${product.slug}`)} key={index} className={`group relative `}>
                                             {product?.threeD ? (
                                                 <div className='absolute max-lg:hidden font-montserrat bg-white m-2 px-4 rounded-full border-2 border-coral-red right-0'>
                                                     3D
                                                 </div>
                                             ) : ("")}
-                                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                                            <div className={`${darkMode ? 'shadow-coral-red shadow-2xl ' : ''}  aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80`}>
                                                 <img src={product.image}
                                                     alt={product.model}
                                                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
@@ -393,36 +416,38 @@ export default function Example() {
                                             </div>
                                             <div className="mt-4 flex justify-between">
                                                 <div>
-                                                    <h3 className="text-sm text-gray-700">
+                                                    <h3 className={`${darkMode ? 'text-white' : 'text-gray-700'} text-sm`}>
                                                         <a >
                                                             <span aria-hidden="true" className="absolute inset-0" />
                                                             {product.model}
                                                         </a>
                                                     </h3>
-                                                    <p className="mt-1 text-sm text-gray-500">
+                                                    <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1 text-sm `}>
                                                         {product?.gender === "male" ? "Men's Shoes" : product?.gender === "female" ? "Women's Shoes" : "Unisex Shoes"}
                                                     </p>
                                                 </div>
-                                                <p className="text-sm font-medium text-gray-900">
+                                                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-900'}  text-sm font-medium`}>
                                                     ₹ {product.price}
                                                 </p>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className='flex justify-end sm:mt-12 mt:8'>
+                                <div className='flex justify-end sm:mt-12 mt-8'>
                                     <div className="flex gap-4">
                                         <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}
-                                            className="dark:hover:bg-[#293b55]  flex items-center gap-2 px-3 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            className={`${darkMode ? 'text-coral-red hover:bg-[#293b55]' : 'text-gray-900 hover:bg-gray-900/10'}  flex items-center gap-2 px-3 font-sans text-xs font-bold text-center  uppercase align-middle transition-all rounded-lg select-none  active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                                             type="button">
-                                            <ChevronLeftIcon className='dark:text-white h-5 w-5' />
+                                            <ChevronLeftIcon className={`${darkMode ? 'text-white h-8 w-8' : 'h-5 w-5'}  `} />
                                         </button>
                                         <div className="flex items-center gap-2">
                                             {pages?.map((page) => (
                                                 <button
                                                     key={page}
                                                     onClick={() => handlePageChange(page)}
-                                                    className={`relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-md font-semibold  text-center align-middle ${currentPage === page ? 'activePage' : 'inactivePage'}`}
+                                                    className={`relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-md font-semibold  text-center align-middle 
+                                                    ${currentPage === page ? `text-coral-red border-coral-red border-2  hover:border-opacity-70  ${darkMode ? ' shadow-coral-red shadow-md' : 'shadow-xl hover:shadow-md'}`
+                                                            : `${darkMode ? 'text-coral-red border-dashed border border-coral-red' : 'text-black'} hover:border-opacity-70 hover:shadow-md hover:border hover:border-coral-red`}`}
                                                 >
                                                     <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
 
@@ -433,9 +458,9 @@ export default function Example() {
                                         </div>
                                         <button onClick={() => handlePageChange(currentPage + 1)}
                                             disabled={currentPage === totalPages}
-                                            className="dark:hover:bg-[#293b55] flex items-center gap-2 px-3  font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            className={`${darkMode ? 'text-coral-red hover:bg-[#293b55]' : 'text-gray-900 hover:bg-gray-900/10'}  flex items-center gap-2 px-3  font-sans text-xs font-bold text-center uppercase align-middle transition-all rounded-lg select-none active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
                                             type="button">
-                                            <ChevronRightIcon className='dark:text-white h-5 w-5' />
+                                            <ChevronRightIcon className={`${darkMode ? 'text-white h-8 w-8' : 'h-5 w-5'}  `} />
                                         </button>
                                     </div>
                                 </div>
