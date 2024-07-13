@@ -23,6 +23,8 @@ import MyOrdersPage from "./pages/MyOrdersPage";
 import { DarkModeProvider } from "./context/dark";
 import { FilterProvider } from "./context/filter";
 import AdminRoutes from "./routes/AdminRoutes";
+import LoaderPage from "./pages/LoaderPage";
+import ContactUsPage from "./pages/ContactUsPage";
 
 const App = () => {
 
@@ -33,7 +35,8 @@ const App = () => {
         <FilterProvider>
           <ToastContainer />
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<LoaderPage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/product-page/:slug" element={<ProductPage />} />
             <Route path="/product-page1" element={<ProductPage1 />} />
             <Route path="/admin" element={<AdminRoutes />}>
@@ -48,6 +51,7 @@ const App = () => {
             <Route path="/aboutus" element={<AboutUsPage />} />
             <Route path="/verify" element={<VerifyPage />} />
             <Route path="/my-orders" element={<MyOrdersPage />} />
+            <Route path="/contact" element={<ContactUsPage />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </FilterProvider>

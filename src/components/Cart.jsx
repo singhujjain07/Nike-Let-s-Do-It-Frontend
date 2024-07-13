@@ -20,7 +20,7 @@ const Cart = ({ type, address, mode }) => {
         try {
             const parsedQuantity = parseInt(quantity, 10);
             const newQuantity = isNaN(parsedQuantity) || parsedQuantity === 0 ? 1 : parsedQuantity;
-            const res = await axios.put('/api/v1/auth/update-cart', { userId: auth?.user?._id, cartId: id, qty: newQuantity });
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/update-cart`, { userId: auth?.user?._id, cartId: id, qty: newQuantity });
             if (res && res.data.success) {
                 const newCart = res.data.cart
                 setAuth((prevAuth) => ({
@@ -40,7 +40,7 @@ const Cart = ({ type, address, mode }) => {
     };
     const handleRemoveCart = async (cartId) => {
         try {
-            const res = await axios.delete(`/api/v1/auth/remove-cart?userId=${auth?.user?._id}&cartId=${cartId}`);
+            const res = await axios.delete(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/remove-cart?userId=${auth?.user?._id}&cartId=${cartId}`);
             if (res && res.data.success) {
                 const newCart = res.data.cart;
                 // console.log(updatedUser)
@@ -67,8 +67,8 @@ const Cart = ({ type, address, mode }) => {
     const fetchProductDetails = async () => {
         try {
             const productDetails = await Promise.all(
-                cart.map(item =>
-                    axios.post(`/api/v1/products/get-single-product`, { productId: item.productId })
+                cart?.map(item =>
+                    axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/products/get-single-product`, { productId: item.productId })
                 )
             );
             if (productDetails.length) {
@@ -114,7 +114,7 @@ const Cart = ({ type, address, mode }) => {
             items: orderItems,
             amount: subtotal,
         }
-        let res = await axios.post(`/api/v1/order/place`, orderData);
+        let res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/order/place`, orderData);
         if (res.data.success) {
             const stripe = await stripePromise;
             const { error } = await stripe.redirectToCheckout({

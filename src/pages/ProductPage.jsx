@@ -38,7 +38,7 @@ const ProductPage = () => {
     // get product
     const getProduct = async () => {
         try {
-            const { data } = await axios.get(`/api/v1/products/get-product/${params.slug}`)
+            const { data } = await axios.get(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/products/get-product/${params.slug}`)
             setProduct(data?.product)
             setShoeimg(data?.product?.colors[0]?.images)
             setShoeSizes(data?.product?.colors[0]?.sizes)
@@ -49,7 +49,11 @@ const ProductPage = () => {
     }
     const addToFavorites = async () => {
         try {
-            const res = await axios.post(`/api/v1/auth/add-to-favorites`, { userId: auth?.user?._id, itemId: product?._id });
+            if (!auth?.user) {
+                toast.warn('Login first!');
+                return;
+            }
+            const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/add-to-favorites`, { userId: auth?.user?._id, itemId: product?._id });
             if (res && res.data.success) {
                 const newFavorites = res.data.favorites;
                 setAuth((prevAuth) => ({
@@ -72,6 +76,10 @@ const ProductPage = () => {
     }
     const addToCart = async () => {
         try {
+            if (!auth?.user) {
+                toast.warn('Login first!');
+                return;
+            }
             var sz;
             if (selectSize.length) {
                 sz = selectSize[0];
@@ -79,7 +87,7 @@ const ProductPage = () => {
                     toast.info("Item already in cart")
                     return;
                 }
-                const res = await axios.post(`/api/v1/auth/add-to-cart`, { userId: auth?.user?._id, productId: product?._id, img: product?.colors[shoeClr].images[0], qty: 1, color: shoeClr, size: sz });
+                const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/add-to-cart`, { userId: auth?.user?._id, productId: product?._id, img: product?.colors[shoeClr].images[0], qty: 1, color: shoeClr, size: sz });
                 if (res && res.data.success) {
                     const newCart = res.data.cart;
                     setAuth((prevAuth) => ({
@@ -156,10 +164,26 @@ const ProductPage = () => {
     }
 
     return (
-        <main className={`${darkMode ? 'bgDark' : ''} flex flex-col `}>
+        <main className={`${darkMode ? 'bgDark' : ''} flex flex-col isolate`}>
             <div className="fixed top-0 w-full z-20 ">
                 <Navbar />
             </div>
+            {
+                darkMode && (
+                    <div
+                        className=" fixed right-[0]  top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+                        aria-hidden="true"
+                    >
+                        <div
+                            className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+                            style={{
+                                clipPath:
+                                    'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+                            }}
+                        />
+                    </div>
+                )
+            }
             <section className="xl:px-32 px-8 py-12 max-lg:mt-8">
                 <section className=" w-full flex lg:flex-col flex-col justify-center max-container">
                     <div className={`lg:sticky lg:top-24   lg:w-3/5 flex lg:flex-row flex-col items-start w-full xl:gap-8 gap-4`}>
@@ -233,7 +257,7 @@ const ProductPage = () => {
                         </div>
                         <div className='flex flex-col gap-2 justify-center'>
                             {/* <Button label="Add to Bag" backgroundColor={"bg-black"} borderColor={"border-black"} textColor={"text-white"} fullWidth /> */}
-                            <button onClick={() => { addToCart() }} className={`flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none ${darkMode ? ' bg-gray-800 text-gray-300 border-gray-500 ' : ' bg-black text-white border-black '} rounded-full w-96 max-lg:w-full `}>
+                            <button onClick={() => { addToCart() }} className={`flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none ${darkMode ? ' bg-coral-red text-black border-coral-red ' : ' bg-black text-white border-black '} rounded-full w-96 max-lg:w-full `}>
                                 Add to Bag
                             </button>
                             {isPresent ? (
@@ -243,7 +267,7 @@ const ProductPage = () => {
                                     <img src={heart1} alt="arrow right icon" className="ml-2 w-4 h-4" />
                                 </button>
                             ) : (
-                                <button onClick={() => { addToFavorites() }} className={`${darkMode ? 'text-gray-200 ' : ' '}  flex justify-center items-center gap-2 px-7 py-4 border border-gray-500 font-montserrat text-lg leading-none rounded-full w-96 max-lg:w-full  `}>
+                                <button onClick={() => { addToFavorites() }} className={`${darkMode ? ' bg-gray-800 text-gray-300 border-gray-500 ' : ' bg-black text-white border-black '} flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none rounded-full w-96 max-lg:w-full  `}>
                                     Favourite
                                     <img src={`${darkMode ? heart1 : heart}`} alt="arrow right icon" className={`${darkMode ? 'text-gray-200 ' : ' '} ml-2 w-4 h-4`} />
                                 </button>

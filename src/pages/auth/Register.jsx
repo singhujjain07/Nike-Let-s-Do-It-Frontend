@@ -20,7 +20,7 @@ const Register = () => {
                 toast.error("Passwords not matching");
                 return;
             }
-            const res = await axios.post("/api/v1/auth/register",
+            const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/register`,
                 { name, email, password, phone }
             )
             if(res.data.success){

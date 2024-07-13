@@ -75,7 +75,7 @@ export default function Example() {
     };
     const fetchProducts = async () => {
         try {
-            const response = await axios.get('/api/v1/products/products', {
+            const response = await axios.get(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/products/products`, {
                 params: {
                     // colors: colors.join(','),
                     // gender: genders.join(','),
@@ -117,6 +117,13 @@ export default function Example() {
             return updatedFilter;
         });
     };
+    const resetFilter = () => {
+        setFilter((prevFilter) => {
+            const updatedFilter = { ...prevFilter, colors: [], genders: [] }
+            localStorage.setItem('filter', JSON.stringify(updatedFilter));
+            return updatedFilter;
+        });
+    }
     useEffect(() => {
         fetchProducts();
     }, [filter])
@@ -138,11 +145,27 @@ export default function Example() {
         setData(products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
     }, [currentPage])
     return (
-        <div className={`${darkMode ? 'bgDark' : ''}`}>
+        <div className={`${darkMode ? 'bgDark' : ''} isolate`}>
             <div className="fixed top-0 w-full z-20 ">
                 <Navbar />
             </div>
             <div>
+                {
+                    darkMode && (
+                        <div
+                            className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+                            aria-hidden="true"
+                        >
+                            <div
+                                className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+                                style={{
+                                    clipPath:
+                                        'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+                                }}
+                            />
+                        </div>
+                    )
+                }
                 {/* Mobile filter dialog */}
                 <Transition show={mobileFiltersOpen}>
                     <Dialog className="relative z-40 lg:hidden" onClose={setMobileFiltersOpen}>
@@ -180,8 +203,15 @@ export default function Example() {
                                     </div>
 
                                     {/* Filters */}
-                                    <form className="mt-4 border-t border-gray-200">
+                                    <div className="mt-4 border-t border-gray-200">
                                         <h3 className="sr-only">Categories</h3>
+                                        <button
+                                            onClick={() => resetFilter()}
+                                            className={`mx-2 px-2 mt-4 rounded-full text-md font-semibold  text-center align-middle  text-coral-red border-coral-red border-2  hover:border-opacity-70 ${darkMode ? ' shadow-coral-red shadow-md' : 'shadow-xl hover:shadow-md'}`} >
+                                            <span className="px-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                                Reset Filter
+                                            </span>
+                                        </button>
                                         <ul role="list" className="px-2 py-3 font-medium text-gray-900">
                                             {subCategories.map((category) => (
                                                 <li key={category.name} className='flex'>
@@ -247,7 +277,7 @@ export default function Example() {
                                                 )}
                                             </Disclosure>
                                         ))}
-                                    </form>
+                                    </div>
                                 </DialogPanel>
                             </TransitionChild>
                         </div>
@@ -325,7 +355,7 @@ export default function Example() {
 
                         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
                             {/* Filters */}
-                            <form className="hidden lg:block">
+                            <div className="hidden lg:block">
                                 <h3 className="sr-only">Categories</h3>
                                 <ul role="list" className={`space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900`}>
                                     {subCategories.map((category) => (
@@ -343,7 +373,7 @@ export default function Example() {
                                         {({ open }) => (
                                             <>
                                                 <h3 className="-my-3 flow-root">
-                                                    <DisclosureButton className={` ${darkMode ? 'bgDark' : 'bg-white'} flex w-full items-center justify-between  py-3 text-sm text-gray-400 hover:text-gray-500`}>
+                                                    <DisclosureButton className={` flex w-full items-center justify-between  py-3 text-sm text-gray-400 hover:text-gray-500`}>
                                                         <span className={`${darkMode ? 'text-white' : 'text-gray-900'} font-medium `}>
                                                             {section.name}
                                                         </span>
@@ -395,7 +425,14 @@ export default function Example() {
                                         )}
                                     </Disclosure>
                                 ))}
-                            </form>
+                                <button
+                                    onClick={() => resetFilter()}
+                                    className={`mt-4 rounded-full text-md font-semibold  text-center align-middle  text-coral-red border-coral-red border-2  hover:border-opacity-70 ${darkMode ? ' shadow-coral-red shadow-md' : 'shadow-xl hover:shadow-md'}`} >
+                                    <span className="px-2 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                        Reset Filter
+                                    </span>
+                                </button>
+                            </div>
 
                             {/* Product grid */}
                             <div className="lg:col-span-4">

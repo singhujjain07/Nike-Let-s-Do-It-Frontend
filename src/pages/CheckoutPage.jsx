@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/auth';
 import { toast } from 'react-toastify'
 import axios from 'axios';
 import Cart from "../components/Cart";
+import { DarkModeContext } from '../context/dark';
 
 
 const CheckoutPage = () => {
@@ -19,6 +20,7 @@ const CheckoutPage = () => {
     const [addresses, setAddresses] = useState([]);
     const [addIndex, setAddIndex] = useState(0);
     const [paymentMode, setPaymentMode] = useState(0);
+    const [darkMode,setDarkMode] = useContext(DarkModeContext);
     const resetForm = () => {
         setFullname("");
         setCountry("India");
@@ -33,7 +35,7 @@ const CheckoutPage = () => {
     const addAddress = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`/api/v1/auth/add-address`, { userId: auth?.user?._id, fullname, country, blockno, phone, street, city, state, pinCode });
+            const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/add-address`, { userId: auth?.user?._id, fullname, country, blockno, phone, street, city, state, pinCode });
             const newAddresses = res.data.addresses;
             setAddresses(newAddresses)
             setAuth((prevAuth) => ({
@@ -61,7 +63,7 @@ const CheckoutPage = () => {
 
 
     return (
-        <div className='bg-gray-300'>
+        <div className={'bg-gray-300'}>
             <div className="fixed top-0 w-full z-20 ">
                 <Navbar />
             </div>

@@ -22,6 +22,7 @@ export default {
       fontFamily: {
         palanquin: ['Palanquin', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
+        cursive: ['"Comic Sans MS", "Comic Sans", cursive'],
       },
       colors: {
         'primary': "#ECEEFF",

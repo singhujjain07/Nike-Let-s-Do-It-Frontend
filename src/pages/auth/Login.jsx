@@ -17,7 +17,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/api/v1/auth/login",
+            const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/login`,
                 { email, password }
             )
             if (res && res.data.success) {
@@ -28,7 +28,7 @@ const Login = () => {
                     token: res.data.token
                 })
                 localStorage.setItem('auth', JSON.stringify(res.data))
-                navigate(location.state || '/')
+                navigate(location.state || '/home')
             } else {
                 toast.error(res.data.message);
             }

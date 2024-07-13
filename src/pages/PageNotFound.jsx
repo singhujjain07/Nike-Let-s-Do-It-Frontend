@@ -22,7 +22,7 @@ const PageNotFound = () => {
                             <p className="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
                             <div className="mt-10 grid sm:grid-cols-2 grid-cols-1 items-center justify-center gap-x-6">
                                 <Link
-                                    to="/"
+                                    to="/home"
                                     className="rounded-md bg-coral-red px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral-red"
                                 >
                                     Go back home

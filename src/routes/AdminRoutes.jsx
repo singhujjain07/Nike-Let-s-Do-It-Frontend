@@ -10,7 +10,7 @@ export default function AdminRoutes(){
 
     useEffect(()=>{
         const authCheck = async ()=>{
-            const res = await axios.post('/api/v1/auth/admin-auth',{userId:auth.user._id})
+            const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/auth/admin-auth`,{userId:auth.user._id})
             console.log(res)
             if(res.data.ok){
                 setOk(true);

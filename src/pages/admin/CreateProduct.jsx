@@ -162,7 +162,7 @@ const CreateProduct = () => {
                 toast.error('Please fill price field!')
                 return;
             }
-            const { data } = await axios.post('/api/v1/products/create-product', { model, gender, description, price, colors });
+            const { data } = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/products/create-product`, { model, gender, description, price, colors });
             console.log(data)
             if (data?.success) {
                 toast.success('Product Created Successfully')

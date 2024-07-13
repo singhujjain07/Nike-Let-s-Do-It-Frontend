@@ -10,9 +10,9 @@ const VerifyPage = () => {
     const orderId = searchParams.get("orderId");
     const navigate = useNavigate();
     const verifyPayment = async () => {
-        const res = await axios.post('/api/v1/order/verify', { success, orderId });
+        const res = await axios.post(`${import.meta.env.VITE_SERVER_ADDRESS}/api/v1/order/verify`, { success, orderId });
         if (res?.data?.success && success=="true") {
-            setAuth((prevAuth) => {
+            await setAuth((prevAuth) => {
                 const updatedAuth = {
                     ...prevAuth,
                     user: {

@@ -5,7 +5,7 @@ export const DarkModeProvider = ({ children }) => {
     // Initialize state from local storage or set to default value
     const [darkMode, setDarkMode] = useState(() => {
         const savedMode = localStorage.getItem('darkMode');
-        return savedMode !== null ? JSON.parse(savedMode) : true;
+        return savedMode !== null ? JSON.parse(savedMode) : false;
     });
     // Save state to local storage whenever it changes
     useEffect(() => {
