@@ -2,28 +2,36 @@
 # Nike Revamped 
 
  • A modernized version of the Nike website, enhancing its user interface and user experience.
+ 
  • Integrated 3D models using Three.js and Three Fiber enhancing user interaction.
+ 
  • Integrated Stripe payment gateway to ensure smooth transactions.
 
 ## Deployment
  Frontend : [`https://nike-revamped.netlify.app`](https://nike-revamped.netlify.app/)
+ 
  Backend: `hosted on render`
 
 **Note:** The backend is hosted on a free server which gets shutdown after some time of inactivity.
+
 So, 1 min buffer is added to send a req to server and switch it on.
 
 ## Tech Stack
 This project is a complete **MERN** stack project.
 
 **Frontend**: Tailwind CSS, Framer Motion
+
 **3d Models**: Three Fiber
+
 **Payments**: Stripe Payment Gateway
 
 
 ## Run Locally
 
 Clone or fork repositories from:
+
  Frontend Repository: [`https://github.com/singhujjain07/Nike-Let-s-Do-It-Frontend`](https://github.com/singhujjain07/Nike-Let-s-Do-It-Frontend)
+ 
  Backend Repository: [`https://github.com/singhujjain07/Nike-Let-s-Do-It-backend`](https://github.com/singhujjain07/Nike-Let-s-Do-It-backend) 
 
 💿 Install all dependencies:
@@ -54,9 +62,13 @@ Clone or fork repositories from:
 
 ### Product Page
 **Features**: 
+
  • Multiple Colors for each product.
+ 
  • Images from different angles for each color.
+ 
  • Availability of sizes for each color varies.
+ 
  • Interactive 3D models for selective products to rotate and see from differnet angles.
 
 ![App Screenshot](https://github.com/singhujjain07/Nike-Let-s-Do-It-Frontend/blob/main/screenshots/9.jpg?raw=true)
